@@ -1,0 +1,94 @@
+{
+  "theme": "dark",
+  "archetype": "5 (Jewel & Luxury)",
+  "colors": {
+    "background": "#0A1118",
+    "surface": "#111D28",
+    "primary": "#D4AF37",
+    "primary_hover": "#F3E5AB",
+    "secondary": "#006D77",
+    "text_main": "#F8F9FA",
+    "text_muted": "#A0ABBA",
+    "border": "rgba(255, 255, 255, 0.1)",
+    "glass_bg": "rgba(10, 17, 24, 0.6)"
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond, serif",
+    "body_font": "Montserrat, sans-serif",
+    "h1": "text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight text-[#F8F9FA]",
+    "h2": "text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-[#F8F9FA]",
+    "h3": "text-xl sm:text-2xl font-light text-[#F8F9FA]",
+    "body": "text-base leading-relaxed text-[#A0ABBA]",
+    "button": "text-sm uppercase tracking-[0.2em] font-medium"
+  },
+  "spacing_and_layout": {
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_gap": "py-20 md:py-32",
+    "card_padding": "p-8",
+    "bento_grid": "grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8",
+    "border_radius": "rounded-none md:rounded-sm"
+  },
+  "surface_strategies": {
+    "header": "Crystal Glass: backdrop-blur-2xl bg-[#0A1118]/60 border-b border-white/10",
+    "cards": "Flat solid background #111D28 with 1px border-white/10, subtle shadow on hover, crisp edges",
+    "buttons": {
+      "primary": "bg-[#D4AF37] text-[#0A1118] hover:bg-[#F3E5AB] transition-colors py-3 px-8",
+      "secondary": "border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10 transition-colors py-3 px-8"
+    }
+  },
+  "motion": {
+    "hover": "transition-all duration-300 ease-in-out",
+    "image_hover": "hover:scale-105 transition-transform duration-700 ease-out",
+    "scroll": "Smooth scrolling momentum for premium feel (e.g., lenis)"
+  },
+  "components_strategy": {
+    "tabs": "Custom tablist, border-b border-white/10, active tab text-[#D4AF37] border-b-2 border-[#D4AF37]",
+    "menu_grid": "Grid layout, no standard cards, full-width images with titles elegantly placed below",
+    "gallery": "Bento or masonry layout, seamless images, negative space emphasis"
+  },
+  "image_urls": {
+    "hero": {
+      "url": "https://images.unsplash.com/photo-1571936979636-c6c5e345fb73?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxmcmVzaCUyMG95c3RlcnMlMjBsdXh1cnklMjBwbGF0aW5nfGVufDB8fHx8MTc3Nzk4MjQ2MHww&ixlib=rb-4.1.0&q=85",
+      "description": "Oysters with caviar on ice - perfect for Hero background. Requires a heavy dark overlay (bg-black/50 or more)."
+    },
+    "interior_about": {
+      "url": "https://images.pexels.com/photos/19343364/pexels-photo-19343364.jpeg",
+      "description": "Cozy restaurant interior featuring elegant golden chandeliers and a dimly lit ambiance. Use for the 'About' section."
+    },
+    "menu_oysters": {
+      "url": "https://images.unsplash.com/photo-1775481132664-53ce2276d0ee?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMG95c3RlcnMlMjBsdXh1cnklMjBwbGF0aW5nfGVufDB8fHx8MTc3Nzk4MjQ2MHww&ixlib=rb-4.1.0&q=85",
+      "description": "Two oysters served on a plate with greens. High quality food photography."
+    },
+    "menu_tartare": {
+      "url": "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwyfHxmaW5lJTIwZGluaW5nJTIwc2FsbW9uJTIwdGFydGFyZXxlbnwwfHx8fDE3Nzc5ODI0NjB8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Fine dining plate representing salmon tartare or similar appetizer."
+    },
+    "menu_steak": {
+      "url": "https://images.unsplash.com/photo-1763186711083-406cf3ea5665?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTB8MHwxfHNlYXJjaHwxfHxncmlsbGVkJTIwc3RlYWslMjBmaW5lJTIwZGluaW5nfGVufDB8fHx8MTc3Nzk4MjQ2NXww&ixlib=rb-4.1.0&q=85",
+      "description": "Sliced steak fine dining style."
+    },
+    "panoramic_view": {
+      "url": "https://images.unsplash.com/photo-1680946496238-5272d3c407fc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBkYXJrJTIwcmVzdGF1cmFudCUyMGludGVyaW9yfGVufDB8fHx8MTc3Nzk4MjQ2NXww&ixlib=rb-4.1.0&q=85",
+      "description": "Dimly lit room showing premium panoramic restaurant atmosphere."
+    },
+    "general_seafood": {
+      "url": "https://images.unsplash.com/photo-1663530761401-15eefb544889?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzd8MHwxfHNlYXJjaHwzfHxwcmVtaXVtJTIwc2VhZm9vZCUyMGRpc2glMjBkYXJrJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3Nzc5ODI0NjB8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Premium dish for menu or gallery grids."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Build a modern, responsive website for 'Sollmarine' (a premium seafood restaurant).",
+    "Use .js files (not .tsx) as requested.",
+    "The primary color palette is Dark Navy, Teal (Sea Wave), White, and Gold Accents.",
+    "Implement the Hero section with a full-viewport background image, a dark overlay to ensure text contrast, the slogan 'Свежесть моря в каждом блюде', and two buttons: 'Забронировать стол' (primary gold) and 'Смотреть меню' (secondary outline).",
+    "About Section ('О ресторане'): Include a rating of 4.9, 92 guests, VIP-зал, and живая музыка. Use a highly stylized, asymmetric bento layout for these stats.",
+    "Menu Section ('Меню'): Highlight 'Рыба и морепродукты' as the main focus. Add categories for Стейки, Пицца, Паста, Рамен, Том-ям, Салаты/супы, Закуски. Avoid standard generic cards; use borderless images with elegant text below.",
+    "Delivery Section ('Доставка'): Integrate a shopping cart design/functionality + a WhatsApp CTA.",
+    "Amenities Section ('Удобства'): Highlight детское меню, аниматоры, Wi-Fi, and парковка using elegant minimalist icons (e.g., from lucide-react).",
+    "Gallery: Create a masonry or bento grid with zero or very tight gaps, displaying the premium food and interior images.",
+    "Reviews Section: Emphasize the 4.9 rating. Can use a slick horizontal scroll or standard grid.",
+    "Contacts Section: Include a placeholder for a map and mention the bus stop 'Сказка'.",
+    "Footer: Add payment options and social media links.",
+    "Always use 'data-testid' on interactive elements for automated testing."
+  ]
+}
