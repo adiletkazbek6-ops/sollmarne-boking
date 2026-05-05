@@ -101,3 +101,109 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Sollmarine — премиум-сайт ресторана морепродуктов на Expo Web с темно-синей/морской/золотой палитрой.
+  Секции: Hero, About, Menu, Delivery, Amenities, Gallery, Reviews, Contacts.
+  Функционал: бронирование столика (DB + Telegram уведомление админу), доставка с корзиной (DB + Telegram уведомление).
+
+backend:
+  - task: "Reservations API (POST/GET /api/reservations)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Создаёт бронь в MongoDB, валидирует guests 1..30, возвращает Reservation с UUID. После сохранения запускается background task с Telegram-уведомлением (gracefully skip если не сконфигурирован TELEGRAM_BOT_TOKEN/CHAT_ID)."
+        - working: true
+          agent: "testing"
+          comment: "Tested via public EXPO_PUBLIC_BACKEND_URL. POST /api/reservations with valid payload (Иван, +79991234567, 4 guests, 2026-03-15 19:00) returned 200 in ~0.23s with a valid UUID id and UTC ISO created_at; all fields echoed correctly and record was persisted in MongoDB. Validation working: guests=0 → 422, guests=31 → 422, missing phone → 422. GET /api/reservations returned a 200 list sorted latest-first (newly created reservation at index 0). No hang from background task — response time <1s."
+
+  - task: "Orders API (POST/GET /api/orders)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Создаёт заказ в MongoDB, отвергает пустую корзину (400). Запускается background task с Telegram-уведомлением о новом заказе."
+        - working: true
+          agent: "testing"
+          comment: "POST /api/orders with valid payload (Анна, 1 item Устрицы ×2 = 4980₽) returned 200 with UUID id, items array preserved, total correct, created_at ISO UTC. Empty items [] correctly rejected with 400 and detail 'Cart is empty'. GET /api/orders returned 200 list sorted latest-first with our new order at index 0. No exceptions in backend logs."
+
+  - task: "Telegram notifications integration"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Реализована через httpx async POST к Telegram Bot API (sendMessage, parse_mode=HTML). Без креденшелов — silent skip с info-логом. Эндпоинт /api/telegram/test для проверки."
+        - working: true
+          agent: "testing"
+          comment: "GET /api/ correctly returns {service:'Sollmarine API', status:'ok', telegram_configured:false}. POST /api/telegram/test without TELEGRAM_BOT_TOKEN/CHAT_ID returns 400 with detail 'Telegram is not configured'. Background notifications for reservations/orders silently skip — backend.err.log shows two 'Telegram not configured — skipping notification' INFO lines, no tracebacks or ERROR entries. Fire-and-forget background task does not delay HTTP response."
+
+frontend:
+  - task: "Single-page premium website (Expo Web) with all sections"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/index.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Hero, About, Menu (8 категорий, табы), Delivery (теги+CTA+WhatsApp), Amenities, Gallery, Reviews, Contacts (с встроенной картой Yandex), Footer. Адаптивно для мобилы (исправлен header crowding)."
+
+  - task: "Reservation modal with form -> POST /api/reservations"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/index.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Modal с полями имя/телефон/email/гостей/время/дата/комментарий. На вебе используется нативный <input type=date> и <input type=time>. После успеха показывает 'Спасибо' экран."
+
+  - task: "Cart modal with full delivery checkout -> POST /api/orders"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/index.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Корзина с qty +/-, удалением, итогом, формой имя/телефон/адрес/комментарий. После заказа показывает 'Заказ принят'."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus: []
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "Бэкенд готов. Telegram-уведомления через background tasks (silent skip если ENV не задан). Прошу протестировать: 1) POST /api/reservations с валидным телом — должен вернуть 200 и сохранить в БД; 2) POST /api/reservations с guests=0 или 31 — должен вернуть 422 валидационную ошибку; 3) GET /api/reservations — должен вернуть список (последняя бронь — первая); 4) POST /api/orders с пустыми items — должен вернуть 400 'Cart is empty'; 5) POST /api/orders с корректным телом — 200 и сохранение; 6) GET /api/orders — список; 7) GET /api/ — должен вернуть {service, status:ok, telegram_configured:false}; 8) POST /api/telegram/test без креденшелов — должен вернуть 400 'Telegram is not configured'. Логи бэкенда не должны содержать ошибок при skip Telegram."
+    - agent: "testing"
+      message: "Backend testing complete — all 11 test cases PASS against the public EXPO_PUBLIC_BACKEND_URL (https://sollmarine-booking.preview.emergentagent.com/api). Created /app/backend_test.py with full coverage: GET /api/ health check (returns expected payload with telegram_configured:false), POST /api/reservations (valid Russian payload succeeds with UUID + UTC ISO created_at in ~0.23s; validation: guests=0→422, guests=31→422, missing phone→422), GET /api/reservations (200 list, latest-first ordering verified), POST /api/orders (valid payload with Устрицы item succeeds), POST /api/orders empty items [] → 400 with detail 'Cart is empty', GET /api/orders (200 list), POST /api/telegram/test → 400 'Telegram is not configured'. Backend logs show only INFO 'Telegram not configured — skipping notification' entries (no tracebacks, no ERROR lines). MongoDB persistence confirmed. BackgroundTasks do not block HTTP responses. No action needed from main agent."
