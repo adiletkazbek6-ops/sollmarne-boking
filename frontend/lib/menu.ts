@@ -13,13 +13,13 @@ export const categories = [
   { key: "starters", label: "Закуски" },
   { key: "beer", label: "К пиву" },
   { key: "soups", label: "Супы" },
-  { key: "sets", label: "Сеты на компанию" },
+  { key: "sets", label: "Сеты" },
   { key: "steaks", label: "Стейки" },
-  { key: "hot", label: "Горячие блюда" },
+  { key: "hot", label: "Горячее" },
   { key: "burgers", label: "Бургеры" },
   { key: "pasta", label: "Паста" },
   { key: "pizza", label: "Пицца" },
-  { key: "kids", label: "Детское меню" },
+  { key: "kids", label: "Детское" },
   { key: "sides", label: "Гарниры" },
 ];
 

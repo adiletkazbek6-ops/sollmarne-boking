@@ -887,9 +887,9 @@ const styles = StyleSheet.create({
   aboutImage: { width: "100%", height: 560 },
 
   // menu
-  tab: { paddingVertical: 14, paddingHorizontal: 18, borderBottomWidth: 2, borderBottomColor: "transparent", marginRight: 4 },
+  tab: { paddingVertical: 14, paddingHorizontal: 12, borderBottomWidth: 2, borderBottomColor: "transparent", marginRight: 2 },
   tabActive: { borderBottomColor: colors.gold },
-  tabText: { color: colors.textMuted, fontFamily: fonts.body, fontSize: 13, letterSpacing: 2, textTransform: "uppercase" },
+  tabText: { color: colors.textMuted, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1.2, textTransform: "uppercase" },
   tabTextActive: { color: colors.gold },
   menuGrid: { marginTop: 32, flexDirection: "row", flexWrap: "wrap", gap: 20 },
   menuCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, flexGrow: 1, flexBasis: 300, maxWidth: 400 },
