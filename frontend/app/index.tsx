@@ -20,13 +20,15 @@ import { colors, fonts, injectWebFonts } from "../lib/theme";
 import { menu, categories, galleryImages, reviews, MenuItem } from "../lib/menu";
 
 const API = (process.env.EXPO_PUBLIC_BACKEND_URL || "") + "/api";
-const PHONE = "+7 (495) 123-45-67";
-const PHONE_RAW = "+74951234567";
-const WHATSAPP = "74951234567";
-const ADDRESS = "г. Москва, ул. Приморская, 15 (рядом с остановкой «Сказка», 1 мин / 70 м)";
+const PHONE = "+7 708 180 68 25";
+const PHONE_RAW = "+77081806825";
+const WHATSAPP = "77081806825";
+const INSTAGRAM = "https://instagram.com/sollmarine";
+const ADDRESS = "Казахстан, Актау, ЖК Twin Towers, мкр 5А, дом 4";
+const LANDMARK = "Ориентир: остановка «Сказка» — 1 мин / 70 м";
 
 // ------ Small helpers ------
-const fmt = (n: number) => `${n.toLocaleString("ru-RU")} ₽`;
+const fmt = (n: number) => `${n.toLocaleString("ru-RU")} ₸`;
 
 type CartItem = MenuItem & { quantity: number };
 
@@ -110,7 +112,7 @@ function Header({
 }
 
 // -------------- Hero --------------
-function Hero({ onBook, onMenu }: any) {
+function Hero({ onBook, onMenu, onDelivery }: any) {
   return (
     <ImageBackground
       source={{
@@ -121,10 +123,10 @@ function Hero({ onBook, onMenu }: any) {
     >
       <View style={styles.heroOverlay} />
       <View style={styles.heroContent} {...(Platform.OS === "web" ? { className: "smt-fade-up" } as any : {})}>
-        <Text style={styles.eyebrow}>SOLLMARINE · SINCE 2014</Text>
+        <Text style={styles.eyebrow}>SOLLMARINE · АКТАУ</Text>
         <Text style={styles.heroTitle}>Свежесть моря{"\n"}в каждом блюде</Text>
         <Text style={styles.heroSubtitle}>
-          Премиальный ресторан рыбной кухни. Панорамный вид, живая музыка, шеф-повар с 20-летним опытом.
+          Премиальный ресторан рыбной кухни в Актау. Панорамный вид, VIP-зал, живая музыка и детская зона.
         </Text>
         <View style={styles.heroCTAs}>
           <TouchableOpacity style={styles.goldBtn} onPress={onBook} testID="hero-book-btn">
@@ -133,13 +135,16 @@ function Hero({ onBook, onMenu }: any) {
           <TouchableOpacity style={styles.outlineBtn} onPress={onMenu} testID="hero-menu-btn">
             <Text style={styles.outlineBtnText}>Смотреть меню</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.outlineBtn} onPress={onDelivery} testID="hero-delivery-btn">
+            <Text style={styles.outlineBtnText}>Заказать доставку</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.heroStatsRow}>
-          <HeroStat value="4.9" label="Рейтинг гостей" />
+          <HeroStat value="4.9" label="279 отзывов" />
           <View style={styles.heroDivider} />
           <HeroStat value="92" label="Мест в зале" />
           <View style={styles.heroDivider} />
-          <HeroStat value="10 лет" label="Безупречного сервиса" />
+          <HeroStat value="~7 000 ₸" label="Средний чек" />
         </View>
       </View>
     </ImageBackground>
@@ -161,15 +166,15 @@ function About({ isMobile }: any) {
           <Text style={styles.eyebrowGold}>О РЕСТОРАНЕ</Text>
           <Text style={styles.sectionTitle}>Место, где море{"\n"}становится искусством</Text>
           <Text style={styles.paragraph}>
-            Sollmarine — это авторская кухня шеф-повара, свежайшие морепродукты с ежедневных поставок,
-            атмосфера европейского fine dining и панорамный вид на закат. Мы создаём не просто ужин —
-            мы создаём впечатление, которое хочется повторять.
+            Sollmarine — это авторская рыбная кухня, премиальные стейки и душа русской кухни.
+            Свежайшие морепродукты, огонь открытой кухни, уютный семейный формат и атмосфера fine dining —
+            мы создаём не просто ужин, а впечатление, которое хочется повторять.
           </Text>
           <View style={styles.bentoGrid}>
-            <BentoStat big value="4.9" label="из 5.0 по отзывам" />
-            <BentoStat value="92" label="Гостей в основном зале" />
-            <BentoStat value="VIP" label="Закрытая комната на 12 мест" />
-            <BentoStat value="LIVE" label="Живая музыка по пятницам и субботам" />
+            <BentoStat big value="4.9" label="из 5.0 · 279 отзывов" />
+            <BentoStat value="92" label="Гостя в основном зале" />
+            <BentoStat value="VIP" label="Закрытый зал для событий" />
+            <BentoStat value="LIVE" label="Живая музыка по выходным" />
           </View>
         </View>
         <View style={[styles.col, { alignItems: "center" }]}>
@@ -238,7 +243,10 @@ function MenuCard({ item, onAdd }: any) {
     <View style={styles.menuCard} testID={`menu-item-${item.id}`}>
       <Image source={{ uri: item.image }} style={styles.menuImage} resizeMode="cover" />
       <View style={{ padding: 20 }}>
-        <Text style={styles.menuName}>{item.name}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <Text style={styles.menuName}>{item.name}</Text>
+          {item.spicy && <Text style={styles.spicyBadge}>🌶</Text>}
+        </View>
         <Text style={styles.menuDesc}>{item.description}</Text>
         <View style={styles.menuCardFooter}>
           <Text style={styles.menuPrice}>{fmt(item.price)}</Text>
@@ -253,7 +261,7 @@ function MenuCard({ item, onAdd }: any) {
 
 // -------------- Delivery --------------
 function Delivery({ onOpenCart }: any) {
-  const tags = ["Пицца", "Бургеры", "Десерты", "Паста", "Супы", "Салаты", "Стейки", "Жареная рыба"];
+  const tags = ["Рыба", "Стейки", "Паста", "Пицца", "Бургеры", "Супы", "Салаты", "Закуски", "Детское меню"];
   const openWA = () => {
     const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Здравствуйте! Хочу сделать заказ в Sollmarine.")}`;
     Linking.openURL(url);
@@ -261,11 +269,11 @@ function Delivery({ onOpenCart }: any) {
   return (
     <View style={styles.section} nativeID="delivery">
       <View style={styles.sectionInner}>
-        <Text style={styles.eyebrowGold}>ДОСТАВКА 60 МИН</Text>
+        <Text style={styles.eyebrowGold}>ДОСТАВКА ПО АКТАУ</Text>
         <Text style={styles.sectionTitle}>Ресторан у вас дома</Text>
         <Text style={styles.paragraph}>
-          Любимые блюда в фирменной упаковке, с соблюдением температурного режима. Доставляем по Москве
-          и области. Минимальный заказ — 1 500 ₽.
+          Любимые блюда в фирменной упаковке, с соблюдением температурного режима.
+          Основной канал заказов — WhatsApp. Также можно оформить онлайн через корзину.
         </Text>
         <View style={styles.tagsWrap}>
           {tags.map((t) => (
@@ -275,11 +283,11 @@ function Delivery({ onOpenCart }: any) {
           ))}
         </View>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16, marginTop: 32 }}>
-          <TouchableOpacity style={styles.goldBtn} onPress={onOpenCart} testID="delivery-order-btn">
-            <Text style={styles.goldBtnText}>Заказать онлайн</Text>
+          <TouchableOpacity style={styles.goldBtn} onPress={openWA} testID="delivery-whatsapp-btn">
+            <Text style={styles.goldBtnText}>Заказать в WhatsApp</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.outlineBtn} onPress={openWA} testID="delivery-whatsapp-btn">
-            <Text style={styles.outlineBtnText}>Написать в WhatsApp</Text>
+          <TouchableOpacity style={styles.outlineBtn} onPress={onOpenCart} testID="delivery-order-btn">
+            <Text style={styles.outlineBtnText}>Оформить онлайн</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -290,14 +298,14 @@ function Delivery({ onOpenCart }: any) {
 // -------------- Amenities --------------
 function Amenities({ isMobile }: any) {
   const items = [
-    { icon: "♣", title: "Детское меню", desc: "И отдельная детская комната с настольными играми" },
+    { icon: "♣", title: "Детская комната", desc: "Отдельная зона с игрушками и детской мебелью" },
     { icon: "♠", title: "Аниматоры", desc: "Мастер-классы и праздники по выходным" },
-    { icon: "◆", title: "Кабинки", desc: "Уютные приватные лаунж-зоны на 4–6 гостей" },
-    { icon: "≈", title: "Панорамный вид", desc: "Окна в пол и терраса с видом на закат" },
-    { icon: "♪", title: "Живая музыка", desc: "Джаз и саксофон по пятницам и субботам" },
-    { icon: "⚑", title: "Бесплатная парковка", desc: "20 мест прямо у входа" },
-    { icon: "↯", title: "Wi-Fi", desc: "Высокоскоростной интернет для гостей" },
-    { icon: "♛", title: "VIP-зал", desc: "Отдельная комната для событий до 12 персон" },
+    { icon: "◆", title: "Кабинки", desc: "Уютные приватные лаунж-зоны для семей и компаний" },
+    { icon: "♟", title: "Настольные игры", desc: "Большая коллекция игр для всей семьи" },
+    { icon: "≈", title: "Панорамный вид", desc: "Окна в пол и вид на город Актау" },
+    { icon: "♪", title: "Живая музыка", desc: "Выступления по пятницам и субботам" },
+    { icon: "⚑", title: "Бесплатная парковка", desc: "20 мест прямо у входа в Twin Towers" },
+    { icon: "↯", title: "Wi-Fi", desc: "Высокоскоростной интернет для всех гостей" },
   ];
   return (
     <View style={styles.sectionDark}>
@@ -353,7 +361,7 @@ function Reviews() {
         <Text style={styles.sectionTitle}>
           4.9 <Text style={{ color: colors.gold }}>★★★★★</Text>
         </Text>
-        <Text style={styles.paragraph}>По данным Яндекс Карт и 2ГИС — более 2 800 отзывов</Text>
+        <Text style={styles.paragraph}>По данным 2ГИС и Google — 279 отзывов от гостей в Актау</Text>
         <View style={styles.reviewsGrid}>
           {reviews.map((r) => (
             <View key={r.id} style={styles.reviewCard} testID={`review-${r.id}`}>
@@ -370,27 +378,53 @@ function Reviews() {
 
 // -------------- Contacts --------------
 function Contacts({ onBook }: any) {
+  const openWA = () => {
+    const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Здравствуйте! Хочу уточнить информацию о ресторане Sollmarine.")}`;
+    Linking.openURL(url);
+  };
+  const openRoute = () => {
+    Linking.openURL("https://yandex.kz/maps/?text=Казахстан,+Актау,+Twin+Towers,+мкр+5А,+дом+4");
+  };
   return (
     <View style={styles.section} nativeID="contacts">
       <View style={styles.sectionInner}>
         <Text style={styles.eyebrowGold}>КОНТАКТЫ</Text>
         <Text style={styles.sectionTitle}>Добро пожаловать</Text>
+
+        <View style={styles.holidayBanner} testID="holiday-banner">
+          <Text style={styles.holidayIcon}>🎉</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.holidayTitle}>В праздничные дни график может меняться</Text>
+            <Text style={styles.holidayText}>
+              Перед визитом или оформлением брони просим уточнять график работы по телефону {PHONE}
+            </Text>
+          </View>
+        </View>
+
         <View style={styles.contactsRow}>
           <View style={styles.contactsCol}>
-            <ContactRow label="Адрес" value={ADDRESS} />
-            <ContactRow label="Телефон" value={PHONE} onPress={() => Linking.openURL(`tel:${PHONE_RAW}`)} />
-            <ContactRow label="Часы работы" value={"Пн–Чт: 12:00 – 00:00\nПт–Вс: 12:00 – 02:00"} />
-            <ContactRow label="Как добраться" value={"Остановка «Сказка» — 1 минута / 70 метров пешком"} />
-            <TouchableOpacity style={[styles.goldBtn, { marginTop: 24, alignSelf: "flex-start" }]} onPress={onBook} testID="contacts-book-btn">
-              <Text style={styles.goldBtnText}>Забронировать стол</Text>
-            </TouchableOpacity>
+            <ContactRow label="Адрес" value={`${ADDRESS}\n${LANDMARK}`} />
+            <ContactRow label="Телефон / WhatsApp" value={PHONE} onPress={() => Linking.openURL(`tel:${PHONE_RAW}`)} />
+            <ContactRow label="Часы работы" value={"Ежедневно: 12:00 – 24:00"} />
+            <ContactRow label="Instagram" value="@sollmarine" onPress={() => Linking.openURL(INSTAGRAM)} />
+            <View style={{ flexDirection: "row", gap: 12, flexWrap: "wrap", marginTop: 24 }}>
+              <TouchableOpacity style={styles.goldBtn} onPress={onBook} testID="contacts-book-btn">
+                <Text style={styles.goldBtnText}>Забронировать</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.outlineBtn} onPress={openWA} testID="contacts-whatsapp">
+                <Text style={styles.outlineBtnText}>WhatsApp</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.outlineBtn} onPress={openRoute} testID="contacts-route">
+                <Text style={styles.outlineBtnText}>Маршрут</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.mapBox}>
             {Platform.OS === "web" ? (
               // @ts-ignore
               <iframe
                 title="map"
-                src="https://yandex.ru/map-widget/v1/?ll=37.617635%2C55.755814&z=15&l=map"
+                src="https://yandex.kz/map-widget/v1/?text=Казахстан%2C+Актау%2C+Twin+Towers%2C+микрорайон+5А%2C+дом+4&z=17&l=map"
                 style={{ width: "100%", height: "100%", border: 0, borderRadius: 4 }}
               />
             ) : (
@@ -420,31 +454,33 @@ function Footer() {
           <View style={{ flex: 1, minWidth: 240, marginBottom: 24 }}>
             <Text style={styles.logo}>SOLL<Text style={{ color: colors.gold }}>MARINE</Text></Text>
             <Text style={[styles.paragraph, { marginTop: 12, maxWidth: 360 }]}>
-              Премиальный ресторан рыбной кухни в центре Москвы. Свежесть моря и душа русской кухни.
+              Премиальный ресторан рыбной кухни в Актау. Свежесть моря, премиум-стейки и душа русской кухни.
             </Text>
           </View>
           <View style={{ flex: 1, minWidth: 180, marginBottom: 24 }}>
             <Text style={styles.footerHead}>Оплата</Text>
             <Text style={styles.footerLine}>Банковские карты</Text>
             <Text style={styles.footerLine}>Наличные</Text>
-            <Text style={styles.footerLine}>QR / СБП</Text>
-            <Text style={styles.footerLine}>Apple / Google Pay</Text>
+            <Text style={styles.footerLine}>QR / Kaspi</Text>
           </View>
           <View style={{ flex: 1, minWidth: 180, marginBottom: 24 }}>
             <Text style={styles.footerHead}>Соцсети</Text>
-            <TouchableOpacity onPress={() => Linking.openURL("https://instagram.com")}><Text style={styles.footerLink}>Instagram</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL("https://t.me")}><Text style={styles.footerLink}>Telegram</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL("https://vk.com")}><Text style={styles.footerLink}>VKontakte</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => Linking.openURL("https://youtube.com")}><Text style={styles.footerLink}>YouTube</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL(INSTAGRAM)}>
+              <Text style={styles.footerLink}>Instagram</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${WHATSAPP}`)}>
+              <Text style={styles.footerLink}>WhatsApp</Text>
+            </TouchableOpacity>
           </View>
           <View style={{ flex: 1, minWidth: 220, marginBottom: 24 }}>
             <Text style={styles.footerHead}>Контакты</Text>
             <Text style={styles.footerLine}>{PHONE}</Text>
             <Text style={styles.footerLine}>{ADDRESS}</Text>
+            <Text style={styles.footerLine}>Ежедневно 12:00 – 24:00</Text>
           </View>
         </View>
         <View style={styles.footerBottom}>
-          <Text style={styles.footerSmall}>© 2026 Sollmarine. Все права защищены.</Text>
+          <Text style={styles.footerSmall}>© 2026 Sollmarine · Актау. Все права защищены.</Text>
           <Text style={styles.footerSmall}>Сделано с любовью к морю</Text>
         </View>
       </View>
@@ -688,12 +724,12 @@ export default function Index() {
   useEffect(() => {
     injectWebFonts();
     if (Platform.OS === "web" && typeof document !== "undefined") {
-      document.title = "Sollmarine — Премиальный ресторан рыбной кухни в Москве";
+      document.title = "Sollmarine — Премиальный рыбный ресторан в Актау | Морепродукты, стейки";
       const meta = document.querySelector('meta[name="description"]') || document.createElement("meta");
       meta.setAttribute("name", "description");
       meta.setAttribute(
         "content",
-        "Sollmarine — ресторан рыбной и морской кухни в Москве. Онлайн-бронирование столиков, доставка, стейки, паста, рамен, том-ям. Рейтинг 4.9."
+        "Sollmarine — премиальный рыбный ресторан в Актау, ЖК Twin Towers. Свежие морепродукты, стейки, пицца, паста, рамен, том-ям, детское меню. Онлайн-бронирование столиков и доставка по Актау. Рейтинг 4.9."
       );
       document.head.appendChild(meta);
     }
@@ -740,7 +776,7 @@ export default function Index() {
       />
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 72 }}>
         <View onLayout={(e) => (positions.current["top"] = e.nativeEvent.layout.y)}>
-          <Hero onBook={() => setReservationOpen(true)} onMenu={() => scrollTo("menu")} />
+          <Hero onBook={() => setReservationOpen(true)} onMenu={() => scrollTo("menu")} onDelivery={() => scrollTo("delivery")} />
         </View>
         <View onLayout={(e) => (positions.current["about"] = e.nativeEvent.layout.y)}>
           <About isMobile={isMobile} />
@@ -896,6 +932,25 @@ const styles = StyleSheet.create({
   contactLabel: { color: colors.gold, fontFamily: fonts.body, fontSize: 11, letterSpacing: 3, textTransform: "uppercase", marginBottom: 6 },
   contactValue: { color: colors.textMain, fontFamily: fonts.body, fontSize: 16, lineHeight: 24 },
   mapBox: { flex: 1, minWidth: 280, minHeight: 420, backgroundColor: colors.surface, overflow: "hidden" },
+
+  // holiday banner
+  holidayBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    padding: 20,
+    backgroundColor: colors.teal,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.gold,
+    marginTop: 24,
+    marginBottom: 8,
+  },
+  holidayIcon: { fontSize: 28 },
+  holidayTitle: { color: colors.textMain, fontFamily: fonts.body, fontSize: 14, fontWeight: "700" as any, letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 },
+  holidayText: { color: "#E6F4F1", fontFamily: fonts.body, fontSize: 14, lineHeight: 20 },
+
+  // spicy
+  spicyBadge: { fontSize: 18 },
 
   // footer
   footer: { backgroundColor: colors.bgDeep, paddingVertical: 64, paddingHorizontal: 24, borderTopWidth: 1, borderTopColor: colors.border },
