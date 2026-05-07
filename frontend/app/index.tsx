@@ -539,17 +539,17 @@ function ReservationModal({ visible, onClose }: any) {
               </TouchableOpacity>
             </View>
           ) : (
-            <>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 8 }}>
               <Text style={styles.eyebrowGold}>БРОНИРОВАНИЕ СТОЛА</Text>
-              <Text style={[styles.sectionTitle, { fontSize: 30, marginBottom: 20 }]}>Зарезервируйте столик</Text>
+              <Text style={[styles.sectionTitle, { fontSize: 28, marginBottom: 18, lineHeight: 34 }]}>Зарезервируйте столик</Text>
               <Field label="Ваше имя" value={form.name} onChangeText={(v: string) => setForm({ ...form, name: v })} testID="res-name" />
               <Field label="Телефон" value={form.phone} onChangeText={(v: string) => setForm({ ...form, phone: v })} testID="res-phone" keyboardType="phone-pad" />
               <Field label="Email (необязательно)" value={form.email} onChangeText={(v: string) => setForm({ ...form, email: v })} testID="res-email" keyboardType="email-address" />
               <View style={{ flexDirection: "row", gap: 12 }}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, minWidth: 0 }}>
                   <Field label="Гостей" value={form.guests} onChangeText={(v: string) => setForm({ ...form, guests: v })} testID="res-guests" keyboardType="numeric" />
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, minWidth: 0 }}>
                   <Field label="Время" value={form.time} onChangeText={(v: string) => setForm({ ...form, time: v })} testID="res-time" inputType="time" />
                 </View>
               </View>
@@ -561,7 +561,7 @@ function ReservationModal({ visible, onClose }: any) {
               <Text style={[styles.paragraph, { fontSize: 12, marginTop: 12, textAlign: "center" }]}>
                 Нажимая кнопку, вы соглашаетесь на обработку персональных данных
               </Text>
-            </>
+            </ScrollView>
           )}
         </View>
       </View>
@@ -591,6 +591,8 @@ const Field = ({ label, testID, inputType, style, ...rest }: any) => {
             fontSize: 15,
             outline: "none",
             colorScheme: "dark",
+            width: "100%",
+            boxSizing: "border-box",
           } as any}
         />
       </View>
@@ -962,9 +964,9 @@ const styles = StyleSheet.create({
   footerSmall: { color: colors.textMuted, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1 },
 
   // modals
-  modalWrap: { flex: 1, backgroundColor: "rgba(0,0,0,0.8)", justifyContent: "center", alignItems: "center", padding: 20 },
-  modalCard: { backgroundColor: colors.surface, width: "100%", maxWidth: 520, maxHeight: "90%", padding: 32, position: "relative", borderWidth: 1, borderColor: colors.border },
-  modalClose: { position: "absolute", top: 16, right: 16, zIndex: 10, padding: 6 },
+  modalWrap: { flex: 1, backgroundColor: "rgba(0,0,0,0.8)", justifyContent: "center", alignItems: "center", padding: 16 },
+  modalCard: { backgroundColor: colors.surface, width: "100%", maxWidth: 520, maxHeight: "92%", padding: 24, paddingTop: 32, position: "relative", borderWidth: 1, borderColor: colors.border, overflow: "hidden" },
+  modalClose: { position: "absolute", top: 12, right: 12, zIndex: 10, padding: 6 },
 
   fieldLabel: { color: colors.textMuted, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 },
   input: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.border, color: colors.textMain, paddingVertical: 12, paddingHorizontal: 14, fontFamily: fonts.body, fontSize: 15 },
