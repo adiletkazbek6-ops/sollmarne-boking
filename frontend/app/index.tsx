@@ -23,7 +23,7 @@ const API = (process.env.EXPO_PUBLIC_BACKEND_URL || "") + "/api";
 const PHONE = "+7 708 180 68 25";
 const PHONE_RAW = "+77081806825";
 const WHATSAPP = "77081806825";
-const INSTAGRAM = "https://instagram.com/sollmarine";
+const INSTAGRAM = "https://www.instagram.com/sollmarine_aktau";
 const ADDRESS = "Казахстан, Актау, ЖК Twin Towers, мкр 5А, дом 4";
 const LANDMARK = "Ориентир: остановка «Сказка» — 1 мин / 70 м";
 
@@ -45,7 +45,6 @@ function Header({
     { k: "about", label: "О нас" },
     { k: "menu", label: "Меню" },
     { k: "delivery", label: "Доставка" },
-    { k: "gallery", label: "Галерея" },
     { k: "contacts", label: "Контакты" },
   ];
   return (
@@ -790,9 +789,6 @@ export default function Index() {
           <Delivery onOpenCart={() => setCartOpen(true)} />
         </View>
         <Amenities isMobile={isMobile} />
-        <View onLayout={(e) => (positions.current["gallery"] = e.nativeEvent.layout.y)}>
-          <Gallery />
-        </View>
         <Reviews />
         <View onLayout={(e) => (positions.current["contacts"] = e.nativeEvent.layout.y)}>
           <Contacts onBook={() => setReservationOpen(true)} />
