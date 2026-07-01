@@ -198,34 +198,74 @@ const BentoStat = ({ value, label, big }: any) => (
 
 // -------------- Menu --------------
 function MenuSection({ onAdd, isMobile }: any) {
-  const [active, setActive] = useState("seafood");
+  const [active, setActive] = useState("salads");
   const items = useMemo(() => menu.filter((m) => m.category === active), [active]);
+  const tabsScrollRef = useRef<ScrollView>(null);
+  const [tabsX, setTabsX] = useState(0);
+  const [tabsMax, setTabsMax] = useState(0);
+
+  const scrollTabs = (dir: 1 | -1) => {
+    const next = Math.max(0, Math.min(tabsMax, tabsX + dir * 260));
+    tabsScrollRef.current?.scrollTo({ x: next, animated: true });
+  };
+
   return (
     <View style={styles.sectionDark} nativeID="menu">
       <View style={styles.sectionInner}>
         <Text style={styles.eyebrowGold}>НАША КАРТА</Text>
         <Text style={styles.sectionTitle}>Меню</Text>
         <Text style={styles.paragraph}>
-          Главный акцент — рыба и морепродукты, каждый день свежие поставки. Также стейки выдержки,
-          неаполитанская пицца, паста ручной работы и азиатские бестселлеры.
+          Свежая рыба и морепродукты каждый день, авторские блюда из осетра, стейки премиального отруба,
+          неаполитанская пицца, паста ручной работы, детское меню и барная карта.
         </Text>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 32 }}>
-          <View style={{ flexDirection: "row", paddingBottom: 8 }}>
-            {categories.map((c) => (
-              <TouchableOpacity
-                key={c.key}
-                onPress={() => setActive(c.key)}
-                style={[styles.tab, active === c.key && styles.tabActive]}
-                testID={`menu-tab-${c.key}`}
-              >
-                <Text style={[styles.tabText, active === c.key && styles.tabTextActive]}>
-                  {c.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+        <View style={styles.tabsRow}>
+          {!isMobile && tabsX > 4 ? (
+            <TouchableOpacity
+              onPress={() => scrollTabs(-1)}
+              style={[styles.tabArrow, styles.tabArrowLeft]}
+              testID="tabs-prev"
+            >
+              <Text style={styles.tabArrowText}>‹</Text>
+            </TouchableOpacity>
+          ) : null}
+          <ScrollView
+            ref={tabsScrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginTop: 32 }}
+            onScroll={(e) => setTabsX(e.nativeEvent.contentOffset.x)}
+            onContentSizeChange={(w) => {
+              // rough width of viewport — use maxScroll = content - visible
+              setTabsMax(Math.max(0, w - 800));
+            }}
+            scrollEventThrottle={16}
+          >
+            <View style={{ flexDirection: "row", paddingBottom: 8, paddingHorizontal: !isMobile ? 44 : 0 }}>
+              {categories.map((c) => (
+                <TouchableOpacity
+                  key={c.key}
+                  onPress={() => setActive(c.key)}
+                  style={[styles.tab, active === c.key && styles.tabActive]}
+                  testID={`menu-tab-${c.key}`}
+                >
+                  <Text style={[styles.tabText, active === c.key && styles.tabTextActive]}>
+                    {c.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+          {!isMobile && tabsX < tabsMax - 4 ? (
+            <TouchableOpacity
+              onPress={() => scrollTabs(1)}
+              style={[styles.tabArrow, styles.tabArrowRight]}
+              testID="tabs-next"
+            >
+              <Text style={styles.tabArrowText}>›</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
 
         <View style={[styles.menuGrid, isMobile && { gridTemplateColumns: "1fr" as any }]}>
           {items.map((it) => (
@@ -885,6 +925,24 @@ const styles = StyleSheet.create({
   aboutImage: { width: "100%", height: 560 },
 
   // menu
+  tabsRow: { position: "relative" },
+  tabArrow: {
+    position: "absolute",
+    top: 40,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+    ...(Platform.OS === "web" ? ({ boxShadow: "0 2px 12px rgba(0,0,0,0.5)" } as any) : {}),
+  },
+  tabArrowLeft: { left: 0 },
+  tabArrowRight: { right: 0 },
+  tabArrowText: { color: colors.gold, fontSize: 22, lineHeight: 24, fontWeight: "600" as any, marginTop: -2 },
   tab: { paddingVertical: 14, paddingHorizontal: 12, borderBottomWidth: 2, borderBottomColor: "transparent", marginRight: 2 },
   tabActive: { borderBottomColor: colors.gold },
   tabText: { color: colors.textMuted, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1.2, textTransform: "uppercase" },
