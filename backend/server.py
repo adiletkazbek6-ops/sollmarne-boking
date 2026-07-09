@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -207,6 +208,11 @@ async def telegram_test():
 
 
 app.include_router(api_router)
+
+# Serve uploaded menu photos as static under /api/static/*
+_static_dir = ROOT_DIR / "static"
+_static_dir.mkdir(exist_ok=True)
+app.mount("/api/static", StaticFiles(directory=str(_static_dir)), name="static")
 
 app.add_middleware(
     CORSMiddleware,
