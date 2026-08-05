@@ -267,12 +267,42 @@ function MenuSection({ onAdd, isMobile }: any) {
           ) : null}
         </View>
 
-        <View style={[styles.menuGrid, isMobile && { gridTemplateColumns: "1fr" as any }]}>
-          {items.map((it) => (
-            <MenuCard key={it.id} item={it} onAdd={() => onAdd(it)} />
-          ))}
-        </View>
+        {BEVERAGE_CATS.has(active) ? (
+          <View style={styles.beverageList}>
+            {items.map((it) => (
+              <BeverageRow key={it.id} item={it} onAdd={() => onAdd(it)} />
+            ))}
+          </View>
+        ) : (
+          <View style={[styles.menuGrid, isMobile && { gridTemplateColumns: "1fr" as any }]}>
+            {items.map((it) => (
+              <MenuCard key={it.id} item={it} onAdd={() => onAdd(it)} />
+            ))}
+          </View>
+        )}
       </View>
+    </View>
+  );
+}
+
+// Compact row for beverages — no image, just name/desc/price/action
+const BEVERAGE_CATS = new Set(["nonalc", "coffee", "tea", "beer", "spirits", "cocktails", "wine"]);
+
+function BeverageRow({ item, onAdd }: any) {
+  return (
+    <View style={styles.bevRow} testID={`menu-item-${item.id}`}>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <Text style={styles.bevName}>{item.name}</Text>
+          {item.spicy && <Text style={styles.spicyBadge}>🌶</Text>}
+        </View>
+        <Text style={styles.bevDesc}>{item.description}</Text>
+      </View>
+      <View style={styles.bevDots} />
+      <Text style={styles.bevPrice}>{fmt(item.price)}</Text>
+      <TouchableOpacity onPress={onAdd} style={styles.bevAdd} testID={`add-item-${item.id}`}>
+        <Text style={styles.bevAddText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -1007,6 +1037,35 @@ const styles = StyleSheet.create({
 
   // spicy
   spicyBadge: { fontSize: 18 },
+
+  // beverage list
+  beverageList: {
+    marginTop: 32,
+    ...(Platform.OS === "web" ? ({ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 40, rowGap: 4 } as any) : {}),
+  },
+  bevRow: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    gap: 12,
+  },
+  bevName: { color: colors.textMain, fontFamily: fonts.body, fontSize: 15, fontWeight: "600" as any, letterSpacing: 0.3 },
+  bevDesc: { color: colors.textMuted, fontFamily: fonts.body, fontSize: 12, marginTop: 3, lineHeight: 16 },
+  bevDots: { flex: 0.5, borderBottomWidth: 1, borderBottomColor: colors.border, borderStyle: "dotted", marginBottom: 6, minWidth: 20 },
+  bevPrice: { color: colors.gold, fontFamily: fonts.body, fontSize: 15, fontWeight: "600" as any, letterSpacing: 0.4 },
+  bevAdd: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 2,
+  },
+  bevAddText: { color: colors.gold, fontSize: 16, lineHeight: 18, fontWeight: "600" as any, marginTop: -1 },
 
   // footer
   footer: { backgroundColor: colors.bgDeep, paddingVertical: 64, paddingHorizontal: 24, borderTopWidth: 1, borderTopColor: colors.border },
