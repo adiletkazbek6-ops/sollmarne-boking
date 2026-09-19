@@ -115,10 +115,10 @@ function Hero({ onBook, onMenu, onDelivery }: any) {
   return (
     <ImageBackground
       source={{
-        uri: "https://images.unsplash.com/photo-1571936979636-c6c5e345fb73?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxmcmVzaCUyMG95c3RlcnMlMjBsdXh1cnklMjBwbGF0aW5nfGVufDB8fHx8MTc3Nzk4MjQ2MHww&ixlib=rb-4.1.0&q=85&w=1920",
+        uri: (process.env.EXPO_PUBLIC_BACKEND_URL || "") + "/api/static/interior/015.jpg",
       }}
       style={styles.hero}
-      imageStyle={{ opacity: 0.55 }}
+      imageStyle={{ opacity: 0.5 }}
     >
       <View style={styles.heroOverlay} />
       <View style={styles.heroContent} {...(Platform.OS === "web" ? { className: "smt-fade-up" } as any : {})}>
@@ -179,7 +179,7 @@ function About({ isMobile }: any) {
         <View style={[styles.col, { alignItems: "center" }]}>
           <Image
             source={{
-              uri: "https://images.pexels.com/photos/19343364/pexels-photo-19343364.jpeg?auto=compress&cs=tinysrgb&w=900",
+              uri: (process.env.EXPO_PUBLIC_BACKEND_URL || "") + "/api/static/interior/001.jpg",
             }}
             style={styles.aboutImage}
             resizeMode="cover"
@@ -286,7 +286,7 @@ function MenuSection({ onAdd, isMobile }: any) {
 }
 
 // Compact row for beverages — no image, just name/desc/price/action
-const BEVERAGE_CATS = new Set(["nonalc", "coffee", "tea", "beer", "spirits", "cocktails", "wine"]);
+const BEVERAGE_CATS = new Set(["nonalc", "coffee", "tea", "beer", "spirits", "cocktails", "wine", "sauces"]);
 
 function BeverageRow({ item, onAdd }: any) {
   return (

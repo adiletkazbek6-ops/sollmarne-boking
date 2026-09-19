@@ -216,8 +216,8 @@ const IMG = {
 
 export const menu: MenuItem[] = [
   // ============ САЛАТЫ ============
-  { id: "sa1", category: "salads", name: "Хориатики с соусом сальса верде", description: "Греческий салат с фетой и соусом сальса верде", price: 2900, image: IMG.horiatiki },
-  { id: "sa2", category: "salads", name: "Цезарь с курицей", description: "Нежная курица, пармезан, чиабатта, соус цезарь", price: 3100, image: IMG.caesarChicken },
+  { id: "sa1", category: "salads", name: "Хориатики с соусом сальса верде", description: "Греческий салат с фетой и соусом сальса верде", price: 2900, image: `${PHOTO_BASE}/extras/001.jpg` },
+  { id: "sa2", category: "salads", name: "Цезарь с курицей", description: "Нежная курица, пармезан, чиабатта, соус цезарь", price: 3100, image: `${PHOTO_BASE}/extras/002.jpg` },
   { id: "sa3", category: "salads", name: "Цезарь с креветками", description: "Тигровые креветки, пармезан, чиабатта, соус цезарь", price: 3400, image: `${PHOTO_BASE}/salads/05.jpg` },
   { id: "sa4", category: "salads", name: "Тёплый салат с кониной", description: "Сочная конина, обжаренные овощи, тёплая заправка", price: 3300, image: `${PHOTO_BASE}/salads/04.jpg` },
   { id: "sa5", category: "salads", name: "Салат с морепродуктами", description: "Кальмары, креветки, мидии, микс салатов", price: 3890, image: `${PHOTO_BASE}/salads/03.jpg` },
@@ -226,10 +226,10 @@ export const menu: MenuItem[] = [
 
   // ============ СУПЫ ============
   { id: "su1", category: "soups", name: "Рыбная солянка", description: "Наваристая солянка с ассорти рыбы и оливками", price: 3200, image: `${PHOTO_BASE}/soups/04.jpg` },
-  { id: "su2", category: "soups", name: "Уха по-царски", description: "Три вида рыбы, шафран, водка, зелень", price: 2900, image: IMG.uha },
+  { id: "su2", category: "soups", name: "Уха по-царски", description: "Три вида рыбы, шафран, водка, зелень", price: 2900, image: `${PHOTO_BASE}/extras/003.jpg` },
   { id: "su3", category: "soups", name: "Грибной крем-суп", description: "Шампиньоны и лесные грибы со сливками", price: 2900, image: `${PHOTO_BASE}/soups/02.jpg` },
   { id: "su4", category: "soups", name: "Том-ям с рисом", description: "Острый тайский суп с креветками и рисом", price: 4390, image: `${PHOTO_BASE}/soups/01.jpg`, spicy: true },
-  { id: "su5", category: "soups", name: "Суп с фрикадельками", description: "Домашние фрикадельки, овощи, зелень", price: 2200, image: IMG.meatballSoup },
+  { id: "su5", category: "soups", name: "Суп с фрикадельками", description: "Домашние фрикадельки, овощи, зелень", price: 2200, image: `${PHOTO_BASE}/extras/004.jpg` },
   { id: "su6", category: "soups", name: "Куриный суп-лапша", description: "Прозрачный бульон, домашняя лапша, курица", price: 2200, image: `${PHOTO_BASE}/soups/06.jpg` },
   { id: "su7", category: "soups", name: "Похмельный супчик", description: "Острый, наваристый — идеален для бодрого утра", price: 2500, image: `${PHOTO_BASE}/soups/03.jpg`, spicy: true },
 
@@ -279,13 +279,13 @@ export const menu: MenuItem[] = [
   { id: "me10", category: "meat", name: "Перепёлка со сливочным портобелло", description: "Запечённая перепёлка с соусом из портобелло", price: 2890, image: `${PHOTO_BASE}/poultry/03.jpg` },
   { id: "me11", category: "meat", name: "Фрикасе с блинчиками", description: "Куриное фрикасе в сливочном соусе с блинами", price: 2500, image: `${PHOTO_BASE}/poultry/05.jpg` },
   { id: "me12", category: "meat", name: "Куриные фрикадельки с пюре", description: "Нежные фрикадельки и картофельное пюре", price: 2000, image: `${PHOTO_BASE}/poultry/04.jpg` },
-  { id: "me13", category: "meat", name: "Крылышки «Баффало»", description: "В остром соусе баффало, соус блю чиз", price: 3270, image: IMG.buffalo, spicy: true },
+  { id: "me13", category: "meat", name: "Крылышки «Баффало»", description: "В остром соусе баффало, соус блю чиз", price: 3270, image: `${PHOTO_BASE}/extras/005.jpg`, spicy: true },
 
   // ============ РЫБА · ОСЁТР ============
   { id: "fi1", category: "fish", name: "Сазан жареный / запечённый", description: "Каспийский сазан с овощами и лимоном", price: 6000, image: `${PHOTO_BASE}/fish/03.jpg` },
   { id: "fi2", category: "fish", name: "Кефаль жареная / запечённая", description: "Свежая кефаль с лимоном и травами", price: 3300, image: `${PHOTO_BASE}/fish/02.jpg` },
-  { id: "fi3", category: "fish", name: "Судак жареный / запечённый", description: "Нежное филе судака с лимонным соусом", price: 4190, image: IMG.sudak },
-  { id: "fi4", category: "fish", name: "Стейк из сёмги", description: "Норвежская сёмга, овощи гриль, цитрусовый соус", price: 6590, image: IMG.salmonSteak },
+  { id: "fi3", category: "fish", name: "Судак жареный / запечённый", description: "Нежное филе судака с лимонным соусом", price: 4190, image: `${PHOTO_BASE}/extras/006.jpg` },
+  { id: "fi4", category: "fish", name: "Стейк из сёмги", description: "Норвежская сёмга, овощи гриль, цитрусовый соус", price: 6590, image: `${PHOTO_BASE}/extras/007.jpg` },
   { id: "fi5", category: "fish", name: "Дорадо запечённая", description: "Дорадо на соли с травами Прованса", price: 7390, image: `${PHOTO_BASE}/fish/01.jpg` },
   { id: "fi6", category: "fish", name: "Сибас запечённый", description: "Сибас в соляной корке с лимоном", price: 6290, image: `${PHOTO_BASE}/fish/04.jpg` },
   { id: "fi7", category: "fish", name: "Стейк осетра со спаржей", description: "Сочный стейк осетра с гриль-спаржей", price: 6900, image: `${PHOTO_BASE}/sturgeon/03.jpg` },
@@ -296,25 +296,25 @@ export const menu: MenuItem[] = [
 
   // ============ СЕТЫ · БАНКЕТЫ ============
   { id: "se1", category: "sets", name: "Малый рыбный сет", description: "На 2–3 гостей: ассорти рыбных блюд", price: 11490, image: `${PHOTO_BASE}/sets/02.jpg` },
-  { id: "se2", category: "sets", name: "Сет из птицы", description: "На 4–5 гостей: микс блюд из птицы", price: 16900, image: IMG.setPoultry },
+  { id: "se2", category: "sets", name: "Сет из птицы", description: "На 4–5 гостей: микс блюд из птицы", price: 16900, image: `${PHOTO_BASE}/extras/008.jpg` },
   { id: "se3", category: "sets", name: "Большой рыбный сет", description: "На 4–5 гостей: разнообразие рыбных деликатесов", price: 36000, image: `${PHOTO_BASE}/sets/01.jpg` },
-  { id: "se4", category: "sets", name: "Сет из мяса", description: "На 5–6 гостей: премиальные мясные блюда", price: 37900, image: IMG.setMeat },
-  { id: "se5", category: "sets", name: "Осетрина с рисом и овощами (1,5 кг)", description: "Банкетное блюдо на 5–6 гостей", price: 39900, image: IMG.banquetSturgeon },
-  { id: "se6", category: "sets", name: "Запечённая баранья нога с овощами (4 кг)", description: "Банкетное блюдо на 5–6 гостей", price: 44500, image: IMG.lambLeg },
-  { id: "se7", category: "sets", name: "Бешбармак", description: "Традиционный казахский бешбармак", price: 33500, image: IMG.beshbarmak },
-  { id: "se8", category: "sets", name: "Фишбармак", description: "Авторский рыбный бешбармак", price: 39000, image: IMG.fishbarmak },
-  { id: "se9", category: "sets", name: "Куырдак из баранины", description: "Традиционное казахское блюдо из баранины", price: 36900, image: IMG.kuyrdak },
+  { id: "se4", category: "sets", name: "Сет из мяса", description: "На 5–6 гостей: премиальные мясные блюда", price: 37900, image: `${PHOTO_BASE}/extras/009.jpg` },
+  { id: "se5", category: "sets", name: "Осетрина с рисом и овощами (1,5 кг)", description: "Банкетное блюдо на 5–6 гостей", price: 39900, image: `${PHOTO_BASE}/extras/010.jpg` },
+  { id: "se6", category: "sets", name: "Запечённая баранья нога с овощами (4 кг)", description: "Банкетное блюдо на 5–6 гостей", price: 44500, image: `${PHOTO_BASE}/extras/011.jpg` },
+  { id: "se7", category: "sets", name: "Бешбармак", description: "Традиционный казахский бешбармак", price: 33500, image: `${PHOTO_BASE}/extras/012.jpg` },
+  { id: "se8", category: "sets", name: "Фишбармак", description: "Авторский рыбный бешбармак", price: 39000, image: `${PHOTO_BASE}/extras/013.jpg` },
+  { id: "se9", category: "sets", name: "Куырдак из баранины", description: "Традиционное казахское блюдо из баранины", price: 36900, image: `${PHOTO_BASE}/extras/014.jpg` },
 
   // ============ ГАРНИРЫ ============
   { id: "sd1", category: "sides", name: "Брокколи в соусе", description: "Хрустящая брокколи в фирменном соусе", price: 1900, image: `${PHOTO_BASE}/sides/01.jpg` },
   { id: "sd2", category: "sides", name: "Картофельные шарики", description: "Хрустящие шарики с сыром", price: 1290, image: `${PHOTO_BASE}/sides/02.jpg` },
-  { id: "sd3", category: "sides", name: "Картофельные дипперы", description: "Хрустящие картофельные дольки", price: 1490, image: IMG.dippers },
-  { id: "sd4", category: "sides", name: "Рис припущенный", description: "Длиннозерный рис с маслом", price: 790, image: IMG.rice },
-  { id: "sd5", category: "sides", name: "Картофельное пюре", description: "Нежное пюре со сливками", price: 790, image: IMG.mashed },
+  { id: "sd3", category: "sides", name: "Картофельные дипперы", description: "Хрустящие картофельные дольки", price: 1490, image: `${PHOTO_BASE}/extras/015.jpg` },
+  { id: "sd4", category: "sides", name: "Рис припущенный", description: "Длиннозерный рис с маслом", price: 790, image: `${PHOTO_BASE}/extras/016.jpg` },
+  { id: "sd5", category: "sides", name: "Картофельное пюре", description: "Нежное пюре со сливками", price: 790, image: `${PHOTO_BASE}/extras/017.jpg` },
   { id: "sd6", category: "sides", name: "Овощи гриль", description: "Баклажан, цукини, перец, томат", price: 1790, image: `${PHOTO_BASE}/sides/03.jpg` },
-  { id: "sd7", category: "sides", name: "Молодой картофель", description: "С укропом и сливочным маслом", price: 990, image: IMG.youngPotato },
-  { id: "sd8", category: "sides", name: "Спаржа", description: "Зелёная спаржа на гриле", price: 2490, image: IMG.asparagus },
-  { id: "sd9", category: "sides", name: "Свежевыпеченный хлеб", description: "Домашний хлеб из печи", price: 450, image: IMG.bread },
+  { id: "sd7", category: "sides", name: "Молодой картофель", description: "С укропом и сливочным маслом", price: 990, image: `${PHOTO_BASE}/extras/018.jpg` },
+  { id: "sd8", category: "sides", name: "Спаржа", description: "Зелёная спаржа на гриле", price: 2490, image: `${PHOTO_BASE}/extras/019.jpg` },
+  { id: "sd9", category: "sides", name: "Свежевыпеченный хлеб", description: "Домашний хлеб из печи", price: 450, image: `${PHOTO_BASE}/extras/020.jpg` },
 
   // ============ СОУСЫ ============
   { id: "sc1", category: "sauces", name: "Чесночный", description: "Сливочный соус с чесноком", price: 400, image: IMG.sauces },
@@ -326,9 +326,9 @@ export const menu: MenuItem[] = [
   { id: "sc7", category: "sauces", name: "BBQ", description: "Барбекю с дымным ароматом", price: 400, image: IMG.sauces },
 
   // ============ ДЕСЕРТЫ ============
-  { id: "ds1", category: "desserts", name: "Десерт дня", description: "Уточняйте у официанта", price: 1900, image: IMG.dessertDay },
-  { id: "ds2", category: "desserts", name: "Мороженое", description: "Ассорти шариков мороженого", price: 1680, image: IMG.iceCream },
-  { id: "ds3", category: "desserts", name: "Фруктовое ассорти", description: "Сезонные фрукты на льду", price: 4900, image: IMG.fruits },
+  { id: "ds1", category: "desserts", name: "Десерт дня", description: "Уточняйте у официанта", price: 1900, image: `${PHOTO_BASE}/extras/021.jpg` },
+  { id: "ds2", category: "desserts", name: "Мороженое", description: "Ассорти шариков мороженого", price: 1680, image: `${PHOTO_BASE}/extras/022.jpg` },
+  { id: "ds3", category: "desserts", name: "Фруктовое ассорти", description: "Сезонные фрукты на льду", price: 4900, image: `${PHOTO_BASE}/extras/023.jpg` },
 
   // ============ БЕЗАЛКОГОЛЬНЫЕ НАПИТКИ ============
   // Лимонады 1000 мл
