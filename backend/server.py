@@ -211,6 +211,18 @@ async def telegram_test():
 
 app.include_router(api_router)
 
+
+@app.get("/health")
+async def health():
+    """Root-level health check for Kubernetes probes."""
+    return {"status": "ok"}
+
+
+@app.get("/")
+async def root_status():
+    return {"service": "Sollmarine API", "status": "ok"}
+
+
 # Serve uploaded menu photos as static under /api/static/*
 _static_dir = ROOT_DIR / "static"
 _static_dir.mkdir(exist_ok=True)
