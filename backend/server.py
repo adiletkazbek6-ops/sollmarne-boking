@@ -33,6 +33,8 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+# Avoid leaking bot token in httpx INFO logs (URL contains it)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
 # ---------- Models ----------
