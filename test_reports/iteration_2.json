@@ -1,0 +1,36 @@
+{
+  "summary": "Verified the fix for Kubernetes probe 404s. New tests at /app/backend/tests/test_health_endpoints.py cover: (a) GET /health on internal port 8001 (what k8s probes actually hit) → 200 {\"status\":\"ok\"}, (b) GET / → 200 {\"service\":\"Sollmarine API\", ...}, (c) HTTP/1.0 raw-socket probes to /health and / on port 8001 return 200 with the correct JSON body, (d) full /api/* regression (GET /api/, POST /api/reservations, POST /api/orders, POST /api/telegram/test) still 200, (e) static mount /api/static/menu/salads/01.jpg → 200 image/jpeg. All 10 tests PASSED. Also confirmed with curl --http1.0 that uvicorn answers with HTTP/1.1 200 OK + Connection: close — spec-compliant and accepted by Kubernetes probes.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET {public_ingress}/health", "issue": "The public ingress URL routes non-/api paths to the Expo web frontend, so /health on the PUBLIC hostname returns HTML (Expo app), not the backend probe JSON. This is expected behaviour for the ingress and is NOT what Kubernetes probes hit (probes go directly to the pod on port 8001). No action needed unless external monitoring is also expected to hit /health via the public URL."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_health_endpoints.py",
+    "/app/backend/tests/test_telegram_flow.py",
+    "/app/backend/tests/conftest.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py: routes are declared in mixed order relative to app.include_router and app.mount — currently working but harder to read. Consider grouping all app-level routes (/, /health) before include_router.",
+    "server.py: CORSMiddleware is added AFTER routes/mount. Starlette still handles it, but conventional order is middleware first.",
+    "Pydantic v1 payload.dict() and @app.on_event still in use — flagged in iteration_1; unchanged here."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_health_endpoints.py (new)"
+  ],
+  "success_rate": {"backend": "100% (10/10 pytest cases)", "frontend": "N/A (backend-only test scope)"},
+  "seed_data_creation": "Created 1 TEST_health_regression reservation and 1 TEST_health_regression order in MongoDB during the regression run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "test_health_endpoints.py is safe to re-run. Uses INTERNAL_URL=http://127.0.0.1:8001 for probe simulation because the public ingress does not route non-/api traffic to backend. Raw-socket HTTP/1.0 requests confirmed to receive 200 responses. Telegram credentials still valid; regression run sends 2 additional messages to chat 5360342685.",
+  "rca_of_issue": "Original 404s came from Kubernetes readiness/liveness probes calling GET /health on the backend pod (port 8001) where only /api/* routes existed. Fix: main agent added `@app.get('/health')` and `@app.get('/')` at the app level (server.py:215-223), returning JSON 200. Verified end-to-end: (i) requests to http://127.0.0.1:8001/health return 200 {\"status\":\"ok\"} over both HTTP/1.1 and HTTP/1.0 (raw socket + curl --http1.0), (ii) all /api/* routes and /api/static mount continue to serve 200s, so the fix is non-regressive."
+}
