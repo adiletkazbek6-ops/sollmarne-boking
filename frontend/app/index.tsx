@@ -18,6 +18,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { colors, fonts, injectWebFonts } from "../lib/theme";
 import { menu, categories, galleryImages, reviews, MenuItem } from "../lib/menu";
+import { AuthProvider, useAuth } from "../lib/auth";
 
 const API = (process.env.EXPO_PUBLIC_BACKEND_URL || "") + "/api";
 const PHONE = "+7 708 180 68 25";
@@ -31,6 +32,40 @@ const LANDMARK = "Ориентир: остановка «Сказка» — 1 м
 const fmt = (n: number) => `${n.toLocaleString("ru-RU")} ₸`;
 
 type CartItem = MenuItem & { quantity: number };
+
+// -------------- HeaderAuth (Google Sign-In) --------------
+function HeaderAuth({ isMobile }: any) {
+  const { user, loading, signIn, signOut } = useAuth();
+  if (loading) return null;
+  if (!user) {
+    return (
+      <TouchableOpacity onPress={signIn} style={styles.googleBtn} testID="google-signin-btn">
+        <Text style={styles.googleBtnG}>G</Text>
+        {!isMobile && <Text style={styles.googleBtnText}>Войти</Text>}
+      </TouchableOpacity>
+    );
+  }
+  const initials = (user.name || user.email || "?").trim().slice(0, 1).toUpperCase();
+  return (
+    <View style={styles.userChip} testID="user-chip">
+      {user.picture ? (
+        <Image source={{ uri: user.picture }} style={styles.userAvatar} />
+      ) : (
+        <View style={[styles.userAvatar, { backgroundColor: colors.teal, alignItems: "center", justifyContent: "center" }]}>
+          <Text style={{ color: colors.gold, fontSize: 12, fontWeight: "700" as any }}>{initials}</Text>
+        </View>
+      )}
+      {!isMobile && (
+        <Text style={styles.userName} numberOfLines={1}>
+          {(user.name || user.email || "").split(" ")[0]}
+        </Text>
+      )}
+      <TouchableOpacity onPress={signOut} testID="google-signout-btn" style={{ paddingHorizontal: 4 }}>
+        <Text style={styles.userLogout}>✕</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 // -------------- Header --------------
 function Header({
@@ -74,6 +109,7 @@ function Header({
               </View>
             )}
           </TouchableOpacity>
+          <HeaderAuth isMobile={isMobile} />
           {!isMobile ? (
             <TouchableOpacity style={styles.goldBtnSmall} onPress={onBook} testID="header-book-btn">
               <Text style={styles.goldBtnSmallText}>Забронировать</Text>
@@ -784,6 +820,14 @@ function CartModal({ visible, onClose, items, onInc, onDec, onRemove }: any) {
 
 // ========== MAIN ==========
 export default function Index() {
+  return (
+    <AuthProvider>
+      <IndexInner />
+    </AuthProvider>
+  );
+}
+
+function IndexInner() {
   const { width } = useWindowDimensions();
   const isMobile = width > 0 && width < 880;
   const scrollRef = useRef<ScrollView>(null);
@@ -914,6 +958,34 @@ const styles = StyleSheet.create({
   cartLabel: { color: colors.textMain, fontFamily: fonts.body, fontSize: 13, letterSpacing: 1.5 },
   cartBadge: { backgroundColor: colors.gold, borderRadius: 10, minWidth: 20, height: 20, alignItems: "center", justifyContent: "center", paddingHorizontal: 5 },
   cartBadgeText: { color: colors.bg, fontSize: 11, fontWeight: "700" as any, fontFamily: fonts.body },
+
+  // Google auth
+  googleBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  googleBtnG: { color: colors.gold, fontFamily: fonts.body, fontSize: 15, fontWeight: "700" as any, fontStyle: "italic" as any },
+  googleBtnText: { color: colors.textMain, fontFamily: fonts.body, fontSize: 12, letterSpacing: 1.5, textTransform: "uppercase" },
+  userChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  userAvatar: { width: 26, height: 26, borderRadius: 13, borderWidth: 1, borderColor: colors.gold },
+  userName: { color: colors.textMain, fontFamily: fonts.body, fontSize: 12, maxWidth: 90 },
+  userLogout: { color: colors.textMuted, fontSize: 16, fontWeight: "600" as any },
+
 
   // buttons
   goldBtn: { backgroundColor: colors.gold, paddingVertical: 16, paddingHorizontal: 28, alignItems: "center", justifyContent: "center" },

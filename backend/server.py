@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks
+from fastapi import FastAPI, APIRouter, HTTPException, BackgroundTasks, Header, Request, Response
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -9,7 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import httpx
 
 
@@ -24,6 +24,10 @@ db = client[os.environ['DB_NAME']]
 # Telegram config (optional). If not set, notifications are silently skipped.
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+
+# Emergent Managed Google Auth endpoint
+EMERGENT_AUTH_SESSION_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
+SESSION_TTL_DAYS = 7
 
 app = FastAPI(title="Sollmarine API")
 api_router = APIRouter(prefix="/api")
@@ -207,6 +211,130 @@ async def telegram_test():
         "✅ <b>Sollmarine</b> — тестовое уведомление. Связь с админом установлена."
     )
     return {"sent": ok}
+
+
+# ---------- Auth (Emergent-managed Google Sign-In) ----------
+class SessionRequest(BaseModel):
+    session_id: str
+
+
+async def _get_session_user(session_token: str) -> Optional[dict]:
+    """Look up a stored session by its token, refresh last-seen, return user data or None."""
+    if not session_token:
+        return None
+    session = await db.sessions.find_one({"session_token": session_token})
+    if not session:
+        return None
+    exp = session.get("expires_at")
+    if exp and isinstance(exp, datetime):
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+        if exp < datetime.now(timezone.utc):
+            await db.sessions.delete_one({"session_token": session_token})
+            return None
+    return {
+        "id": session.get("user_id"),
+        "email": session.get("email"),
+        "name": session.get("name"),
+        "picture": session.get("picture"),
+    }
+
+
+def _extract_session_token(request: Request, authorization: Optional[str]) -> Optional[str]:
+    if authorization and authorization.lower().startswith("bearer "):
+        tok = authorization[7:].strip()
+        if tok:
+            return tok
+    cookie_tok = request.cookies.get("session_token")
+    return cookie_tok or None
+
+
+@api_router.post("/auth/session")
+async def auth_session(payload: SessionRequest, response: Response):
+    """Exchange Emergent session_id (from callback URL hash) for a persisted session.
+    Emergent responds with { id, email, name, picture, session_token }.
+    We store the mapping in Mongo and set an HttpOnly cookie for the browser.
+    """
+    if not payload.session_id or len(payload.session_id) < 8:
+        raise HTTPException(status_code=400, detail="Invalid session_id")
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as http:
+            resp = await http.get(
+                EMERGENT_AUTH_SESSION_URL,
+                headers={"X-Session-ID": payload.session_id},
+            )
+    except Exception as e:
+        logger.exception("Emergent auth request failed: %s", e)
+        raise HTTPException(status_code=502, detail="Auth provider unreachable")
+    if resp.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid or expired session_id")
+    data = resp.json()
+    email = (data.get("email") or "").strip().lower()
+    session_token = data.get("session_token") or ""
+    if not email or not session_token:
+        raise HTTPException(status_code=502, detail="Auth provider returned incomplete data")
+
+    user_id = data.get("id") or str(uuid.uuid4())
+    name = data.get("name") or email.split("@")[0]
+    picture = data.get("picture") or None
+    now = datetime.now(timezone.utc)
+    expires_at = now + timedelta(days=SESSION_TTL_DAYS)
+
+    # Upsert user
+    await db.users.update_one(
+        {"email": email},
+        {
+            "$set": {"id": user_id, "email": email, "name": name, "picture": picture, "updated_at": now},
+            "$setOnInsert": {"created_at": now},
+        },
+        upsert=True,
+    )
+    # Save session
+    await db.sessions.update_one(
+        {"session_token": session_token},
+        {
+            "$set": {
+                "session_token": session_token,
+                "user_id": user_id,
+                "email": email,
+                "name": name,
+                "picture": picture,
+                "expires_at": expires_at,
+                "updated_at": now,
+            },
+            "$setOnInsert": {"created_at": now},
+        },
+        upsert=True,
+    )
+    # Set cookie for cross-site preview (SameSite=None; Secure)
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        max_age=SESSION_TTL_DAYS * 24 * 3600,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+    )
+    return {"id": user_id, "email": email, "name": name, "picture": picture, "session_token": session_token}
+
+
+@api_router.get("/auth/me")
+async def auth_me(request: Request, authorization: Optional[str] = Header(default=None)):
+    tok = _extract_session_token(request, authorization)
+    user = await _get_session_user(tok or "")
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return user
+
+
+@api_router.post("/auth/logout")
+async def auth_logout(request: Request, response: Response, authorization: Optional[str] = Header(default=None)):
+    tok = _extract_session_token(request, authorization)
+    if tok:
+        await db.sessions.delete_one({"session_token": tok})
+    response.delete_cookie(key="session_token", path="/")
+    return {"ok": True}
 
 
 app.include_router(api_router)
